@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+    "struts-config_1_2.dtd">
+
+<struts-config>
+
+    <!-- =========================================
+         FORM BEANS
+         Define the ActionForm classes used to
+         capture and validate input from JSP forms.
+         ========================================= -->
+	<form-beans>
+		<!-- Login form for T001.jsp -->
+		<form-bean name="T001Form" type="form.T001Form" />
+		<!-- Search/Delete form for T002.jsp -->
+		<form-bean name="T002Form" type="form.T002Form" />
+		<!--Add/Edit customer form for T003.jsp -->
+		<form-bean name="T003Form" type="form.T003Form" />
+	</form-beans>
+
+    <!-- =========================================
+         GLOBAL FORWARDS
+         Define commonly used JSP pages to be
+         forwarded globally from any Action.
+         ========================================= -->
+    <global-forwards>
+        <!-- Forward to Login page -->
+        <forward name="T001" path="/WEB-INF/jsp/T001.jsp"/>
+        <!-- Forward to T002 page -->
+        <forward name="T002" path="/WEB-INF/jsp/T002.jsp"/>
+          <!-- Forward to T003 page -->
+        <forward name="T003" path="/WEB-INF/jsp/T003.jsp"/>
+    
+    </global-forwards>
+
+    <!-- =========================================
+         ACTION MAPPINGS
+         Define how incoming requests (by path)
+         are handled by corresponding Action classes.
+         ========================================= -->
+    <action-mappings>
+        
+        <!-- Show login form -->
+        <action path="/T001"
+                type="action.T001Action"
+                parameter="showLoginForm"
+                validate="false">
+        </action>
+
+        <!-- Process user login -->
+        <action path="/T001Login"
+                type="org.springframework.web.struts.DelegatingActionProxy"
+                name="T001Form"
+                scope="request"
+                validate="true"
+                input="/WEB-INF/jsp/T001.jsp"
+                parameter="getUserLogin">
+        </action>
+        
+        <!-- Perform search on T002 page -->
+         <action path="/T002"
+                 type="action.T002Action"
+                 name="T002Form"
+                 scope="request"
+                 parameter="search"
+                 validate="false"
+                 input="/WEB-INF/jsp/T002.jsp">
+        </action>
+
+        <!-- Delete record on T002 page -->
+        <action path="/T002Delete"
+                type="action.T002Action"
+                name="T002Form"
+                scope="request"
+                parameter="delete"
+                validate="false">
+        </action>
+
+        <!-- Logout and redirect to login -->
+        <action path="/T002Logout"
+                type="action.T002Action"
+                parameter="logout"
+                validate="false">
+        </action>
+  
+        <action
+                path="/T003"
+                type="action.T003Action"
+                name="T003Form"
+                scope="request"
+                parameter="load"
+                validate="false"
+                input="/WEB-INF/jsp/T003.jsp">    
+         </action>
+          <action
+                path="/T003Save"
+                type="action.T003Action"
+                name="T003Form"
+                scope="request"
+                parameter="save"
+                validate="true"
+                input="/WEB-INF/jsp/T003.jsp">
+    </action>
+    
+    </action-mappings>
+
+    <!-- =========================================
+         MESSAGE RESOURCES
+         Define resource bundle for internationalized
+         messages (labels, errors, etc.).
+         ========================================= -->
+    <message-resources parameter="MessageResource" />
+    <plug-in className="org.springframework.web.struts.ContextLoaderPlugIn">
+    <set-property property="contextConfigLocation" value="/WEB-INF/SpringBeans.xml"/>
+</plug-in>
+    
+</struts-config>

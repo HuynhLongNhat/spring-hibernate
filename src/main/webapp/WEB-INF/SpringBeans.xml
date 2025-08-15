@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           https://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           https://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <!-- Load properties -->
+    <context:property-placeholder location="classpath:dbConfig.properties"/>
+
+    <!-- DataSource -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${db.driver}" />
+        <property name="url" value="${db.url}" />
+        <property name="username" value="${db.username}" />
+        <property name="password" value="${db.password}" />
+    </bean>
+
+    <!-- Hibernate SessionFactory -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mappingResources">
+            <list>
+                <value>entities/T001Entity.hbm.xml</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Transaction Manager -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!-- DAO -->
+    <bean id="T001Dao" class="dao.T001Dao">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!-- Service -->
+    <bean id="T001Service" class="service.T001Service">
+        <property name="t001Dao" ref="T001Dao"/>
+    </bean>
+
+    <!-- Action -->
+    <bean id="T001Login" class="action.T001Action">
+        <property name="t001Service" ref="T001Service"/>
+    </bean>
+
+    <!-- Struts mapping -->
+    <alias name="T001Login" alias="/T001Login"/>
+
+</beans>
