@@ -60,7 +60,7 @@
         
         <!-- Perform search on T002 page -->
          <action path="/T002"
-                 type="action.T002Action"
+                 type="org.springframework.web.struts.DelegatingActionProxy"
                  name="T002Form"
                  scope="request"
                  parameter="search"
@@ -70,7 +70,7 @@
 
         <!-- Delete record on T002 page -->
         <action path="/T002Delete"
-                type="action.T002Action"
+                type="org.springframework.web.struts.DelegatingActionProxy"
                 name="T002Form"
                 scope="request"
                 parameter="delete"
@@ -79,14 +79,14 @@
 
         <!-- Logout and redirect to login -->
         <action path="/T002Logout"
-                type="action.T002Action"
+                type="org.springframework.web.struts.DelegatingActionProxy"
                 parameter="logout"
                 validate="false">
         </action>
   
         <action
                 path="/T003"
-                type="action.T003Action"
+                type="org.springframework.web.struts.DelegatingActionProxy"
                 name="T003Form"
                 scope="request"
                 parameter="load"
@@ -95,7 +95,7 @@
          </action>
           <action
                 path="/T003Save"
-                type="action.T003Action"
+                type="org.springframework.web.struts.DelegatingActionProxy"
                 name="T003Form"
                 scope="request"
                 parameter="save"

@@ -18,7 +18,6 @@ import utils.Helper;
 
 public class T001Action extends MappingDispatchAction {
 
-    // Spring sẽ inject qua setter
     private T001Service t001Service;
 
     public void setT001Service(T001Service t001Service) {
@@ -34,18 +33,17 @@ public class T001Action extends MappingDispatchAction {
         }
     }
 
-    @SuppressWarnings("deprecation")
-	public ActionForward getUserLogin(ActionMapping mapping, ActionForm form,
+    public ActionForward getUserLogin(ActionMapping mapping, ActionForm form,
                                       HttpServletRequest request, HttpServletResponse response) throws Exception {
         T001Form loginForm = (T001Form) form;
 
         // Map form sang DTO
-        T001Dto t001Dto = new T001Dto();
-        t001Dto.setUserId(loginForm.getUserId());
-        t001Dto.setPassword(loginForm.getPassword());
+        T001Dto inputDto = new T001Dto();
+        inputDto.setUserId(loginForm.getUserId());
+        inputDto.setPassword(loginForm.getPassword());
 
-        // Gọi service trực tiếp (đã được Spring inject)
-        T001Dto user = t001Service.getUserLogin(t001Dto);
+        // Gọi service
+        T001Dto user = t001Service.getUserLogin(inputDto);
 
         if (user != null) {
             HttpSession session = request.getSession();

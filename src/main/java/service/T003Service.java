@@ -1,76 +1,68 @@
 package service;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import dao.T003Dao;
 import dto.T002Dto;
+import entities.T002Entity;
 
-/**
- * Service class for handling business logic related to a single customer record.
- *
- * <p>This class serves as the intermediary between the controller layer
- * and the {@link T003Dao} data access layer. It provides methods for retrieving,
- * creating, and updating individual customer records.</p>
- *
- * <p>Implements the Singleton pattern to ensure that only one instance
- * exists throughout the application lifecycle.</p>
- * 
- * @author YourName
- * @version 1.0
- * @since 2025-07-21
- */
 public class T003Service {
 
-    /** Singleton instance of {@code T003Service}. */
-    private static final T003Service INSTANCE = new T003Service();
+    private T003Dao t003Dao;
 
-    /** DAO instance for interacting with the MSTCUSTOMER table. */
-    private final T003Dao t003Dao = T003Dao.getInstance();
-
-    /** Private constructor to prevent external instantiation. */
-    private T003Service() {}
-
-    /**
-     * Returns the singleton instance of {@code T003Service}.
-     *
-     * @return singleton instance
-     */
-    public static T003Service getInstance() {
-        return INSTANCE;
+    public void setT003Dao(T003Dao t003Dao) {
+        this.t003Dao = t003Dao;
     }
 
-    /**
-     * Retrieves a customer by their ID.
-     *
-     * @param customerId unique ID of the customer
-     * @return a populated {@link T002Dto} if the customer exists,
-     *         otherwise {@code null}
-     */
-    public T002Dto getCustomerById(Integer customerId) throws SQLException{
-        return t003Dao.getCustomerById(customerId);
+    public T002Dto getCustomerById(BigDecimal customerId) throws SQLException {
+        T002Entity entity = t003Dao.getCustomerById(customerId);
+        return entity != null ? convertToDto(entity) : null;
     }
 
-    /**
-     * Inserts a new customer record into the database.
-     *
-     * @param customer customer data to insert
-     * @param psnCd    personal code of the user performing the operation
-     * @return {@code true} if the insertion was successful; {@code false} otherwise
-     * @throws SQLException if a database access error occurs
-     */
-    public void insertCustomer(T002Dto customer, Integer psnCd) throws SQLException {
-         t003Dao.insertCustomer(customer, psnCd);
+    public void insertCustomer(T002Dto customerDto, BigDecimal psnCd) throws SQLException {
+        T002Entity entity = new T002Entity();
+        entity.setCustomerId(t003Dao.getNextCustomerId());
+        mapDtoToEntity(customerDto, entity, psnCd);
+        t003Dao.insertCustomer(entity);
     }
 
-    /**
-     * Updates an existing customer record in the database.
-     *
-     * @param customer customer data with updated fields
-     * @param psnCd    personal code of the user performing the update
-     * @return {@code true} if the update was successful; {@code false} otherwise
-     * @throws SQLException if a database access error occurs
-     */
-    public void updateCustomer(T002Dto customer, Integer psnCd) throws SQLException {
-        t003Dao.updateCustomer(customer, psnCd);
+    public void updateCustomer(T002Dto customerDto, BigDecimal psnCd) throws SQLException {
+        T002Entity entity = t003Dao.getCustomerById(customerDto.getCustomerID());
+        if (entity == null) {
+            throw new SQLException("Customer not found: " + customerDto.getCustomerID());
+        }
+        mapDtoToEntity(customerDto, entity, psnCd);
+        t003Dao.updateCustomer(entity);
+    }
+
+    private T002Dto convertToDto(T002Entity entity) {
+        T002Dto dto = new T002Dto();
+        dto.setCustomerID(entity.getCustomerId()); // BigDecimal luôn
+        dto.setCustomerName(entity.getCustomerName());
+        dto.setSex(entity.getSex());
+        dto.setBirthday(entity.getBirthday());
+        dto.setEmail(entity.getEmail());
+        dto.setAddress(entity.getAddress());
+        return dto;
+    }
+
+    private void mapDtoToEntity(T002Dto dto, T002Entity entity, BigDecimal psnCd) {
+        entity.setCustomerName(dto.getCustomerName());
+        entity.setSex(dto.getSex());
+        entity.setBirthday(dto.getBirthday());
+        entity.setEmail(dto.getEmail());
+        entity.setAddress(dto.getAddress());
+        entity.setDeleteYmd(null);
+
+        Timestamp now = new Timestamp(new Date().getTime());
+        if (entity.getInsertYmd() == null) {
+            entity.setInsertYmd(now);
+            entity.setInsertPsnCd(psnCd);
+        }
+        entity.setUpdateYmd(now);
+        entity.setUpdatePsnCd(psnCd);
     }
 }

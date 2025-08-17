@@ -1,14 +1,16 @@
 package form;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
-
-import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 /**
  * Struts Form bean for T003 screen. Holds customer data and performs
@@ -20,7 +22,7 @@ public class T003Form extends ActionForm {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Integer customerId;
+	private BigDecimal customerId;
 	private String customerName;
 	private String sex;
 	private String birthday;
@@ -29,11 +31,11 @@ public class T003Form extends ActionForm {
 	private String mode; // "ADD" or "EDIT"
 
 	// Getters & Setters
-	public Integer getCustomerId() {
+	public BigDecimal getCustomerId() {
 		return customerId;
 	}
 
-	public void setCustomerId(Integer customerId) {
+	public void setCustomerId(BigDecimal customerId) {
 		this.customerId = customerId;
 	}
 

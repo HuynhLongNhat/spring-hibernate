@@ -1,26 +1,26 @@
 package dao;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import dto.T001Dto;
 import entities.T001Entity;
 
-/**
- * DAO class for login operations using Hibernate.
- */
-public class T001Dao {
+public class T001Dao extends HibernateDaoSupport {
 
-	 private SessionFactory sessionFactory;
-	    public void setSessionFactory(SessionFactory sessionFactory) { this.sessionFactory = sessionFactory; }
+    public T001Entity getUserLogin(T001Dto inputDto) {
+        if (inputDto == null) return null;
 
-	    public T001Entity getUserLogin(T001Dto t001Dto) {
-	        Session session = sessionFactory.getCurrentSession();
-	        return (T001Entity) session.createQuery(
-	            "from T001Entity where userId = :userId and password = :password and deleteYmd is null")
-	            .setParameter("userId", t001Dto.getUserId())
-	            .setParameter("password", t001Dto.getPassword())
-	            .uniqueResult();
-	    }
+        // HQL dựa trên entity + field name
+        String hql = "FROM T001Entity u "
+                   + "WHERE u.deleteYmd IS NULL "
+                   + "AND u.userId = :userId "
+                   + "AND u.password = :password";
+
+        return (T001Entity) getHibernateTemplate().execute(session ->
+            session.createQuery(hql)
+                   .setString("userId", inputDto.getUserId())
+                   .setString("password", inputDto.getPassword())
+                   .uniqueResult()
+        );
+    }
 }

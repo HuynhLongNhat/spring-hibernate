@@ -1,5 +1,6 @@
 package action;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -31,8 +32,11 @@ import utils.Helper;
  */
 public class T002Action extends MappingDispatchAction {
 
-	/** Service layer instance for customer operations */
-	private final T002Service t002Service = T002Service.getInstance();
+	private T002Service t002Service;
+
+	public void setT002Service(T002Service t002Service) {
+		this.t002Service = t002Service;
+	}
 
 	/** Number of records per page for pagination */
 	private static final int PAGE_SIZE = 15;
@@ -73,7 +77,7 @@ public class T002Action extends MappingDispatchAction {
 			saveErrors(request, errors);
 			return findCustomer(mapping, form, request, response);
 		}
-		String[] ids = t002Form.getCustomerIds();
+		 BigDecimal[] ids = t002Form.getCustomerIds(); 
 		// Perform deletion using the service layer
 		try {
 			t002Service.deleteCustomers(Arrays.asList(ids));
@@ -108,12 +112,12 @@ public class T002Action extends MappingDispatchAction {
 		String actionType = request.getParameter("actionType");
 		if ("search".equals(actionType) || sco == null) {
 			sco.setCustomerName(t002Form.getCustomerName());
-			sco.setSex(t002Form.getSex());			
+			sco.setSex(t002Form.getSex());
 			// Validate input
 			ActionErrors errors = t002Form.validate(mapping, request);
 			if (!errors.isEmpty()) {
 				saveErrors(request, errors);
-			}else {
+			} else {
 				sco.setBirthdayFrom(t002Form.getBirthdayFrom());
 				sco.setBirthdayTo(t002Form.getBirthdayTo());
 			}
@@ -186,13 +190,14 @@ public class T002Action extends MappingDispatchAction {
 		}
 		return new ActionForward("T001.do", true);
 	}
+
 	private T002SCO getSCO(HttpServletRequest request) {
-	    HttpSession session = request.getSession();
-	    T002SCO sco = (T002SCO) session.getAttribute("T002SCO");
-	    if (sco == null) {
-	        sco = new T002SCO();
-	        session.setAttribute("T002SCO", sco);
-	    }
-	    return sco;
+		HttpSession session = request.getSession();
+		T002SCO sco = (T002SCO) session.getAttribute("T002SCO");
+		if (sco == null) {
+			sco = new T002SCO();
+			session.setAttribute("T002SCO", sco);
+		}
+		return sco;
 	}
 }

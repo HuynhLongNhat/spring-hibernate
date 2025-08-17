@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="entities">
+    <class name="T002Entity" table="MSTCUSTOMER">
+
+        <id name="customerId" column="CUSTOMER_ID" type="big_decimal">
+            <generator class="assigned"/>
+        </id>
+
+        <property name="customerName" column="CUSTOMER_NAME" type="string" length="50"/>
+        <property name="sex" column="SEX" type="string" length="1"/>
+        <property name="birthday" column="BIRTHDAY" type="string" length="10"/>
+        <property name="email" column="EMAIL" type="string" length="40"/>
+        <property name="address" column="ADDRESS" type="string" length="256"/>
+        <property name="deleteYmd" column="DELETE_YMD" type="timestamp" length="8"/>
+        <property name="insertYmd" column="INSERT_YMD" type="timestamp"/>
+        <property name="insertPsnCd" column="INSERT_PSN_CD" type="big_decimal"/>
+        <property name="updateYmd" column="UPDATE_YMD" type="timestamp"/>
+        <property name="updatePsnCd" column="UPDATE_PSN_CD" type="big_decimal"/>
+
+    </class>
+</hibernate-mapping>

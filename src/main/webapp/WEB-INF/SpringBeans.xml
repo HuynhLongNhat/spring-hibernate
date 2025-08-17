@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="
-           http://www.springframework.org/schema/beans
-           https://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-           http://www.springframework.org/schema/context
-           https://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-    <!-- Load properties -->
-    <context:property-placeholder location="classpath:dbConfig.properties"/>
+    <context:property-placeholder location="classpath:dbConfig.properties" />
 
     <!-- DataSource -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -21,10 +20,11 @@
 
     <!-- Hibernate SessionFactory -->
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="dataSource" />
         <property name="mappingResources">
             <list>
                 <value>entities/T001Entity.hbm.xml</value>
+                <value>entities/T002Entity.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -32,31 +32,84 @@
                 <prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
                 <prop key="hibernate.show_sql">true</prop>
                 <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">validate</prop>
+                <prop key="hibernate.current_session_context_class">
+                    org.springframework.orm.hibernate3.SpringSessionContext
+                </prop>
             </props>
         </property>
     </bean>
 
     <!-- Transaction Manager -->
-    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
+    <bean id="transactionManager" 
+          class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <!-- Template cho các service có transaction -->
+    <bean id="baseTransactionProxy" abstract="true"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
     </bean>
 
     <!-- DAO -->
     <bean id="T001Dao" class="dao.T001Dao">
-        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    <bean id="T002Dao" class="dao.T002Dao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    <bean id="T003Dao" class="dao.T003Dao">
+        <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <!-- Service -->
-    <bean id="T001Service" class="service.T001Service">
-        <property name="t001Dao" ref="T001Dao"/>
+    <!-- Service với transaction -->
+    <bean id="T001Service" parent="baseTransactionProxy">
+        <property name="target">
+            <bean class="service.T001Service">
+                <property name="t001Dao" ref="T001Dao" />
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="T002Service" parent="baseTransactionProxy">
+        <property name="target">
+            <bean class="service.T002Service">
+                <property name="t002Dao" ref="T002Dao" />
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="T003Service" parent="baseTransactionProxy">
+        <property name="target">
+            <bean class="service.T003Service">
+                <property name="t003Dao" ref="T003Dao" />
+            </bean>
+        </property>
     </bean>
 
     <!-- Action -->
-    <bean id="T001Login" class="action.T001Action">
-        <property name="t001Service" ref="T001Service"/>
+    <bean id="T001" class="action.T001Action">
+        <property name="t001Service" ref="T001Service" />
+    </bean>
+    <bean id="T002" class="action.T002Action">
+        <property name="t002Service" ref="T002Service" />
+    </bean>
+    <bean id="T003" class="action.T003Action">
+        <property name="t003Service" ref="T003Service" />
     </bean>
 
-    <!-- Struts mapping -->
-    <alias name="T001Login" alias="/T001Login"/>
-
+    <!-- Struts mapping alias -->
+    <alias name="T001" alias="/T001Login" />
+    <alias name="T002" alias="/T002" />
+    <alias name="T002" alias="/T002Delete" />
+    <alias name="T002" alias="/T002Logout" />
+    <alias name="T003" alias="/T003" />
+    <alias name="T003" alias="/T003Save" />
 </beans>

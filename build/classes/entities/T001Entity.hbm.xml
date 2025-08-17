@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="entities">
-    <class name="T001Entity" table="MSTUSER">
-        <id name="psnCd" column="PSN_CD">
-            <generator class="native"/>
-        </id>
-        <property name="userId" column="USERID" type="string" length="8" not-null="true"/>
-        <property name="password" column="PASSWORD" type="string" length="8" not-null="true"/>
-        <property name="username" column="USERNAME" type="string" length="40"/>
-        <property name="deleteYmd" column="DELETE_YMD" type="timestamp"/>
-        <property name="insertYmd" column="INSERT_YMD" type="timestamp"/>
-        <property name="insertPsnCd" column="INSERT_PSN_CD" type="integer"/>
-        <property name="updateYmd" column="UPDATE_YMD" type="timestamp"/>
-        <property name="updatePsnCd" column="UPDATE_PSN_CD" type="integer"/>
-    </class>
+    <class name="entities.T001Entity" table="MSTUSER">
+    <id name="psnCd" column="PSN_CD" type="big_decimal">
+        <generator class="assigned"/>
+    </id>
+    <property name="userId" column="USERID" type="string"/>
+    <property name="password" column="PASSWORD" type="string"/>
+    <property name="username" column="USERNAME" type="string"/>
+    <property name="deleteYmd" column="DELETE_YMD" type="timestamp"/>
+    <property name="insertYmd" column="INSERT_YMD" type="timestamp"/>
+    <property name="insertPsnCd" column="INSERT_PSN_CD" type="big_decimal"/>
+    <property name="updateYmd" column="UPDATE_YMD" type="timestamp"/>
+    <property name="updatePsnCd" column="UPDATE_PSN_CD" type="big_decimal"/>
+</class>
+
 </hibernate-mapping>
