@@ -25,179 +25,208 @@ import utils.Helper;
 /**
  * Action class responsible for handling customer search, listing, deletion, and
  * logout operations on the T002 screen.
- * <p>
- * This class extends {@link MappingDispatchAction} to support multiple methods
- * being mapped to different request parameters.
- * </p>
+ *
+ * <p>This class extends {@link MappingDispatchAction} to support multiple
+ * methods being mapped to different request parameters.</p>
+ *
+ * <p>Responsibilities:</p>
+ * <ul>
+ *   <li>Search and list customers with pagination</li>
+ *   <li>Delete selected customers</li>
+ *   <li>Maintain search conditions across requests</li>
+ *   <li>Logout current user</li>
+ * </ul>
  */
 public class T002Action extends MappingDispatchAction {
 
-	private T002Service t002Service;
+    /** Number of records per page for pagination */
+    private static final int PAGE_SIZE = 15;
 
-	public void setT002Service(T002Service t002Service) {
-		this.t002Service = t002Service;
-	}
+    /** Service layer dependency for customer operations */
+    private T002Service t002Service;
 
-	/** Number of records per page for pagination */
-	private static final int PAGE_SIZE = 15;
+    /**
+     * Setter for dependency injection of {@link T002Service}.
+     *
+     * @param t002Service the service used for customer operations
+     */
+    public void setT002Service(T002Service t002Service) {
+        this.t002Service = t002Service;
+    }
 
-	/**
-	 * Executes a search operation on the T002 screen. This method relies on Struts
-	 * validation defined in {@link form.T002Form}.
-	 *
-	 * @param mapping  The ActionMapping used to select this instance.
-	 * @param form     The ActionForm bean containing search criteria.
-	 * @param request  The HTTP request we are processing.
-	 * @param response The HTTP response we are creating.
-	 * @return An ActionForward to the T002 JSP page with search results.
-	 * @throws Exception If an application-level error occurs.
-	 */
-	public ActionForward search(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		return findCustomer(mapping, form, request, response);
-	}
+    /**
+     * Executes a search operation on the T002 screen.
+     * This method delegates to {@link #findCustomer}.
+     *
+     * @param mapping   the ActionMapping used to select this instance
+     * @param form      the ActionForm bean containing search criteria
+     * @param request   the HTTP request we are processing
+     * @param response  the HTTP response we are creating
+     * @return          an ActionForward to the T002 JSP page with search results
+     * @throws Exception if an application-level error occurs
+     */
+    public ActionForward search(ActionMapping mapping, ActionForm form,
+                                HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return findCustomer(mapping, form, request, response);
+    }
 
-	/**
-	 * Deletes selected customers based on the IDs submitted from the T002 screen.
-	 *
-	 * @param mapping  The ActionMapping used to select this instance.
-	 * @param form     The ActionForm bean containing selected customer IDs.
-	 * @param request  The HTTP request we are processing.
-	 * @param response The HTTP response we are creating.
-	 * @return An ActionForward to refresh the T002 JSP page after deletion.
-	 * @throws Exception If an application-level error occurs.
-	 */
-	@SuppressWarnings("deprecation")
-	public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		T002Form t002Form = (T002Form) form;
-		ActionErrors errors = t002Form.validate(mapping, request);
-		// If no rows are selected, return with an error message
-		if (!errors.isEmpty()) {
-			saveErrors(request, errors);
-			return findCustomer(mapping, form, request, response);
-		}
-		 BigDecimal[] ids = t002Form.getCustomerIds(); 
-		// Perform deletion using the service layer
-		try {
-			t002Service.deleteCustomers(Arrays.asList(ids));
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return findCustomer(mapping, form, request, response);
-	}
+    /**
+     * Deletes selected customers based on the IDs submitted from the T002 screen.
+     *
+     * @param mapping   the ActionMapping used to select this instance
+     * @param form      the ActionForm bean containing selected customer IDs
+     * @param request   the HTTP request we are processing
+     * @param response  the HTTP response we are creating
+     * @return          an ActionForward to refresh the T002 JSP page after deletion
+     * @throws Exception if an application-level error occurs
+     */
+    @SuppressWarnings("deprecation")
+    public ActionForward delete(ActionMapping mapping, ActionForm form,
+                                HttpServletRequest request, HttpServletResponse response) throws Exception {
+        T002Form t002Form = (T002Form) form;
+        ActionErrors errors = t002Form.validate(mapping, request);
 
-	/**
-	 * Core method that performs customer listing and searching with pagination.
-	 *
-	 * @param mapping  The ActionMapping used to select this instance.
-	 * @param form     The ActionForm bean containing search criteria.
-	 * @param request  The HTTP request we are processing.
-	 * @param response The HTTP response we are creating.
-	 * @return An ActionForward to the T002 JSP page with customer data.
-	 * @throws Exception If an application-level error occurs.
-	 */
-	@SuppressWarnings("deprecation")
-	private ActionForward findCustomer(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		// Validate session
-		if (!Helper.isLogin(request)) {
-			response.sendRedirect("T001.do");
-			return null;
-		}
-		HttpSession session = request.getSession();
-		T002Form t002Form = (T002Form) form;
-		T002SCO sco = getSCO(request);
-		// Handle search action
-		String actionType = request.getParameter("actionType");
-		if ("search".equals(actionType) || sco == null) {
-			sco.setCustomerName(t002Form.getCustomerName());
-			sco.setSex(t002Form.getSex());
-			// Validate input
-			ActionErrors errors = t002Form.validate(mapping, request);
-			if (!errors.isEmpty()) {
-				saveErrors(request, errors);
-			} else {
-				sco.setBirthdayFrom(t002Form.getBirthdayFrom());
-				sco.setBirthdayTo(t002Form.getBirthdayTo());
-			}
-			// Save SCO into session
-			session.setAttribute("T002SCO", sco);
-		}
+        // If no rows are selected, return with an error message
+        if (!errors.isEmpty()) {
+            saveErrors(request, errors);
+            return findCustomer(mapping, form, request, response);
+        }
 
-		// Handle pagination
-		int currentPage = 1;
-		try {
-			currentPage = Integer.parseInt(request.getParameter("currentPage"));
-		} catch (NumberFormatException e) {
-			currentPage = 1;
-		}
-		t002Form.setCurrentPage(currentPage);
+        BigDecimal[] ids = t002Form.getCustomerIds();
 
-		int offset = (currentPage - 1) * PAGE_SIZE;
+        // Perform deletion using the service layer
+        try {
+            t002Service.deleteCustomers(Arrays.asList(ids));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return findCustomer(mapping, form, request, response);
+    }
 
-		// Fetch customers from service and prepare data for JSP
-		try {
-			Map<String, Object> data = t002Service.searchCustomers(sco, offset, PAGE_SIZE);
-			@SuppressWarnings("unchecked")
-			List<T002Dto> customers = (List<T002Dto>) data.get("customers");
-			int totalRecords = (int) data.get("totalCount");
-			int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
+    /**
+     * Core method that performs customer listing and searching with pagination.
+     *
+     * @param mapping   the ActionMapping used to select this instance
+     * @param form      the ActionForm bean containing search criteria
+     * @param request   the HTTP request we are processing
+     * @param response  the HTTP response we are creating
+     * @return          an ActionForward to the T002 JSP page with customer data
+     * @throws Exception if an application-level error occurs
+     */
+    @SuppressWarnings("deprecation")
+    private ActionForward findCustomer(ActionMapping mapping, ActionForm form,
+                                       HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // Validate session
+        if (!Helper.isLogin(request)) {
+            response.sendRedirect("T001.do");
+            return null;
+        }
 
-			if (currentPage > totalPages && totalPages > 0) {
-				currentPage = totalPages;
-			}
+        HttpSession session = request.getSession();
+        T002Form t002Form = (T002Form) form;
+        T002SCO sco = getSCO(request);
 
-			request.setAttribute("customers", customers);
-			t002Form.setCurrentPage(currentPage);
-			t002Form.setPrevPage((currentPage > 1) ? currentPage - 1 : 1);
-			t002Form.setNextPage((currentPage < totalPages) ? currentPage + 1 : totalPages);
-			t002Form.setTotalPages(totalPages);
+        // Handle search action
+        String actionType = request.getParameter("actionType");
+        if ("search".equals(actionType) || sco == null) {
+            sco.setCustomerName(t002Form.getCustomerName());
+            sco.setSex(t002Form.getSex());
 
-			request.setAttribute("disableFirst", currentPage == 1);
-			request.setAttribute("disablePrevious", currentPage == 1);
-			request.setAttribute("disableNext", currentPage == totalPages || totalPages == 0);
-			request.setAttribute("disableLast", currentPage == totalPages || totalPages == 0);
+            // Validate input
+            ActionErrors errors = t002Form.validate(mapping, request);
+            if (!errors.isEmpty()) {
+                saveErrors(request, errors);
+            } else {
+                sco.setBirthdayFrom(t002Form.getBirthdayFrom());
+                sco.setBirthdayTo(t002Form.getBirthdayTo());
+            }
 
-			t002Form.setCustomerName(sco.getCustomerName());
-			t002Form.setSex(sco.getSex());
-			t002Form.setBirthdayFrom(sco.getBirthdayFrom());
-			t002Form.setBirthdayTo(sco.getBirthdayTo());
+            // Save SCO into session
+            session.setAttribute("T002SCO", sco);
+        }
 
-			return mapping.findForward("T002");
-		} catch (Exception e) {
-			e.printStackTrace();
-			request.setAttribute("errorMessage", "システムエラーが発生しました。"); // System error occurred
-			return mapping.findForward("T002");
-		}
-	}
+        // Handle pagination
+        int currentPage;
+        try {
+            currentPage = Integer.parseInt(request.getParameter("currentPage"));
+        } catch (NumberFormatException e) {
+            currentPage = 1;
+        }
+        t002Form.setCurrentPage(currentPage);
 
-	/**
-	 * Logs out the current user and redirects to the login page.
-	 *
-	 * @param mapping  The ActionMapping used to select this instance.
-	 * @param form     The optional ActionForm bean for this request.
-	 * @param request  The HTTP request we are processing.
-	 * @param response The HTTP response we are creating.
-	 * @return A redirect ActionForward to the login page.
-	 * @throws Exception If an application-level error occurs.
-	 */
-	public ActionForward logout(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		HttpSession session = request.getSession(false);
-		if (session != null) {
-			session.removeAttribute("user");
-		}
-		return new ActionForward("T001.do", true);
-	}
+        int offset = (currentPage - 1) * PAGE_SIZE;
 
-	private T002SCO getSCO(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		T002SCO sco = (T002SCO) session.getAttribute("T002SCO");
-		if (sco == null) {
-			sco = new T002SCO();
-			session.setAttribute("T002SCO", sco);
-		}
-		return sco;
-	}
+        // Fetch customers from service and prepare data for JSP
+        try {
+            Map<String, Object> data = t002Service.searchCustomers(sco, offset, PAGE_SIZE);
+
+            @SuppressWarnings("unchecked")
+            List<T002Dto> customers = (List<T002Dto>) data.get("customers");
+            int totalRecords = (int) data.get("totalCount");
+            int totalPages = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
+
+            if (currentPage > totalPages && totalPages > 0) {
+                currentPage = totalPages;
+            }
+
+            request.setAttribute("customers", customers);
+            t002Form.setCurrentPage(currentPage);
+            t002Form.setPrevPage((currentPage > 1) ? currentPage - 1 : 1);
+            t002Form.setNextPage((currentPage < totalPages) ? currentPage + 1 : totalPages);
+            t002Form.setTotalPages(totalPages);
+
+            request.setAttribute("disableFirst", currentPage == 1);
+            request.setAttribute("disablePrevious", currentPage == 1);
+            request.setAttribute("disableNext", currentPage == totalPages || totalPages == 0);
+            request.setAttribute("disableLast", currentPage == totalPages || totalPages == 0);
+
+            // Restore search criteria into form
+            t002Form.setCustomerName(sco.getCustomerName());
+            t002Form.setSex(sco.getSex());
+            t002Form.setBirthdayFrom(sco.getBirthdayFrom());
+            t002Form.setBirthdayTo(sco.getBirthdayTo());
+
+            return mapping.findForward("T002");
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "システムエラーが発生しました。"); // System error occurred
+            return mapping.findForward("T002");
+        }
+    }
+
+    /**
+     * Logs out the current user and redirects to the login page.
+     *
+     * @param mapping   the ActionMapping used to select this instance
+     * @param form      the optional ActionForm bean for this request
+     * @param request   the HTTP request we are processing
+     * @param response  the HTTP response we are creating
+     * @return          a redirect ActionForward to the login page
+     * @throws Exception if an application-level error occurs
+     */
+    public ActionForward logout(ActionMapping mapping, ActionForm form,
+                                HttpServletRequest request, HttpServletResponse response) throws Exception {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.removeAttribute("user");
+        }
+        return new ActionForward("T001.do", true);
+    }
+
+    /**
+     * Retrieves the current search condition object (SCO) from session.
+     * If it does not exist, a new one will be created and stored.
+     *
+     * @param request the HTTP request containing the session
+     * @return        the {@link T002SCO} object representing search conditions
+     */
+    private T002SCO getSCO(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        T002SCO sco = (T002SCO) session.getAttribute("T002SCO");
+        if (sco == null) {
+            sco = new T002SCO();
+            session.setAttribute("T002SCO", sco);
+        }
+        return sco;
+    }
 }
