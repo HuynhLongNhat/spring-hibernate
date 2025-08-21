@@ -1,6 +1,5 @@
 package dao;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -105,7 +104,7 @@ public class T002Dao {
      *
      * @param customerIds list of customer IDs to be marked as deleted
      */
-    public void deleteCustomer(List<BigDecimal> customerIds) {
+    public void deleteCustomer(List<Integer> listIds) {
         String hql = "UPDATE T002Entity c "
                    + "SET c.deleteYmd = :today "
                    + "WHERE c.customerId IN (:ids)";
@@ -113,7 +112,7 @@ public class T002Dao {
         Query q = sessionFactory.getCurrentSession().createQuery(hql);
         String currentYmd =new  SimpleDateFormat("yyyyMMdd").format(new Date());
         q.setString("today", currentYmd);
-        q.setParameterList("ids", customerIds);
+        q.setParameterList("ids", listIds);
 
         q.executeUpdate();
     }

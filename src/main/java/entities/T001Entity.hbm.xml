@@ -4,7 +4,7 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="entities">
     <class name="entities.T001Entity" table="MSTUSER">
-    <id name="psnCd" column="PSN_CD" type="big_decimal">
+    <id name="psnCd" column="PSN_CD" type="integer">
         <generator class="assigned"/>
     </id>
     <property name="userId" column="USERID" type="string"/>
@@ -12,9 +12,9 @@
     <property name="username" column="USERNAME" type="string"/>
     <property name="deleteYmd" column="DELETE_YMD" type="timestamp"/>
     <property name="insertYmd" column="INSERT_YMD" type="timestamp"/>
-    <property name="insertPsnCd" column="INSERT_PSN_CD" type="big_decimal"/>
+    <property name="insertPsnCd" column="INSERT_PSN_CD" type="integer"/>
     <property name="updateYmd" column="UPDATE_YMD" type="timestamp"/>
-    <property name="updatePsnCd" column="UPDATE_PSN_CD" type="big_decimal"/>
+    <property name="updatePsnCd" column="UPDATE_PSN_CD" type="integer"/>
 </class>
 
 </hibernate-mapping>

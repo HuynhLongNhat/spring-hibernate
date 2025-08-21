@@ -1,6 +1,5 @@
 package service;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -41,7 +40,7 @@ public class T003Service {
      *         or {@code null} if not found or deleted
      * @throws SQLException if an error occurs while accessing the database
      */
-    public T002Dto getCustomerById(BigDecimal customerId) throws SQLException {
+    public T002Dto getCustomerById(Integer customerId) throws SQLException {
         T002Entity entity = t003Dao.getCustomerById(customerId);
         return entity != null ? convertToDto(entity) : null;
     }
@@ -54,7 +53,7 @@ public class T003Service {
      * @param psnCd       the person code of the user performing the insert
      * @throws SQLException if an error occurs while saving the customer
      */
-    public void insertCustomer(T002Dto customerDto, BigDecimal psnCd) throws SQLException {
+    public void insertCustomer(T002Dto customerDto, int psnCd) throws SQLException {
         T002Entity entity = new T002Entity();
         entity.setCustomerId(t003Dao.getNextCustomerId());
         mapDtoToEntity(customerDto, entity, psnCd);
@@ -68,7 +67,7 @@ public class T003Service {
      * @param psnCd       the person code of the user performing the update
      * @throws SQLException if the customer does not exist or the update fails
      */
-    public void updateCustomer(T002Dto customerDto, BigDecimal psnCd) throws SQLException {
+    public void updateCustomer(T002Dto customerDto, int psnCd) throws SQLException {
         T002Entity entity = t003Dao.getCustomerById(customerDto.getCustomerID());
         if (entity == null) {
             throw new SQLException("Customer not found: " + customerDto.getCustomerID());
@@ -102,7 +101,7 @@ public class T003Service {
      * @param entity the target entity to populate
      * @param psnCd  the person code of the user performing the operation
      */
-    private void mapDtoToEntity(T002Dto dto, T002Entity entity, BigDecimal psnCd) {
+    private void mapDtoToEntity(T002Dto dto, T002Entity entity, int psnCd) {
         entity.setCustomerName(dto.getCustomerName());
         entity.setSex(dto.getSex());
         entity.setBirthday(dto.getBirthday());

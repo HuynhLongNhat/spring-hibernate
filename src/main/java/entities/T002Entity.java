@@ -1,6 +1,5 @@
 package entities;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -17,7 +16,7 @@ import java.sql.Timestamp;
 public class T002Entity {
 
     /** Customer ID (NUMERIC(8)) */
-    private BigDecimal customerId;
+    private Integer customerId;
 
     /** Customer name (VARCHAR(50)) */
     private String customerName;
@@ -41,13 +40,13 @@ public class T002Entity {
     private Timestamp insertYmd;
 
     /** Insertion personal code (NUMERIC(5)) */
-    private BigDecimal insertPsnCd;
+    private Integer insertPsnCd;
 
     /** Update timestamp (TIMESTAMP) */
     private Timestamp updateYmd;
 
     /** Update personal code (NUMERIC(5)) */
-    private BigDecimal updatePsnCd;
+    private Integer updatePsnCd;
 
     // ================= Getters & Setters =================
 
@@ -56,7 +55,7 @@ public class T002Entity {
      * 
      * @return customer ID
      */
-    public BigDecimal getCustomerId() {
+    public Integer getCustomerId() {
         return customerId;
     }
 
@@ -65,7 +64,7 @@ public class T002Entity {
      * 
      * @param customerId customer ID
      */
-    public void setCustomerId(BigDecimal customerId) {
+    public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
     }
 
@@ -200,7 +199,7 @@ public class T002Entity {
      * 
      * @return insertion personal code
      */
-    public BigDecimal getInsertPsnCd() {
+    public Integer getInsertPsnCd() {
         return insertPsnCd;
     }
 
@@ -209,7 +208,7 @@ public class T002Entity {
      * 
      * @param insertPsnCd insertion personal code
      */
-    public void setInsertPsnCd(BigDecimal insertPsnCd) {
+    public void setInsertPsnCd(Integer insertPsnCd) {
         this.insertPsnCd = insertPsnCd;
     }
 
@@ -236,7 +235,7 @@ public class T002Entity {
      * 
      * @return update personal code
      */
-    public BigDecimal getUpdatePsnCd() {
+    public Integer getUpdatePsnCd() {
         return updatePsnCd;
     }
 
@@ -245,7 +244,7 @@ public class T002Entity {
      * 
      * @param updatePsnCd update personal code
      */
-    public void setUpdatePsnCd(BigDecimal updatePsnCd) {
+    public void setUpdatePsnCd(Integer updatePsnCd) {
         this.updatePsnCd = updatePsnCd;
     }
 }

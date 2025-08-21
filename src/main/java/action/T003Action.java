@@ -1,6 +1,5 @@
 package action;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -62,7 +61,7 @@ public class T003Action extends MappingDispatchAction {
 
         if (customerIdStr != null && !customerIdStr.trim().isEmpty()) {
             try {
-                BigDecimal customerId = new BigDecimal(customerIdStr.trim());
+                Integer customerId = Integer.parseInt(customerIdStr.trim());
                 T002Dto customer = t003Service.getCustomerById(customerId);
                 if (customer != null) {
                     t003Form.setCustomerId(customer.getCustomerID());
@@ -120,7 +119,7 @@ public class T003Action extends MappingDispatchAction {
 
         HttpSession session = request.getSession(false);
         T001Dto loggedInUser = (T001Dto) session.getAttribute("user");
-        BigDecimal psnCd = (loggedInUser != null) ? loggedInUser.getPsnCd() : null;
+        int psnCd = (loggedInUser != null) ? loggedInUser.getPsnCd() : null;
 
         try {
             if ("ADD".equals(mode)) {

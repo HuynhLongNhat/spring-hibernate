@@ -40,7 +40,7 @@ public class T003Dao {
      *         not found or already marked as deleted
      * @throws SQLException if any database error occurs
      */
-    public T002Entity getCustomerById(BigDecimal customerId) throws SQLException {
+    public T002Entity getCustomerById(Integer customerId) throws SQLException {
         T002Entity e = (T002Entity) sessionFactory
                 .getCurrentSession()
                 .get(T002Entity.class, customerId);
@@ -74,7 +74,7 @@ public class T003Dao {
      * @return the next customer ID as {@link BigDecimal}
      * @throws SQLException if the sequence does not return a valid value
      */
-    public BigDecimal getNextCustomerId() throws SQLException {
+    public int getNextCustomerId() throws SQLException {
         Object seqObj = sessionFactory
                 .getCurrentSession()
                 .createSQLQuery("SELECT NEXT VALUE FOR SEQ_CUSTOMER_ID")
@@ -83,12 +83,16 @@ public class T003Dao {
         if (seqObj == null) {
             throw new SQLException("SEQ_CUSTOMER_ID did not return a value");
         }
-        if (seqObj instanceof BigDecimal) {
-            return (BigDecimal) seqObj;
-        } else if (seqObj instanceof Number) {
-            return BigDecimal.valueOf(((Number) seqObj).longValue());
+
+        if (seqObj instanceof Number) {
+            return ((Number) seqObj).intValue();
         } else {
-            return new BigDecimal(seqObj.toString());
+            try {
+                return Integer.parseInt(seqObj.toString());
+            } catch (NumberFormatException e) {
+                throw new SQLException("Cannot parse sequence value to int: " + seqObj, e);
+            }
         }
     }
+
 }

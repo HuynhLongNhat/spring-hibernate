@@ -80,7 +80,8 @@ public class T001Action extends MappingDispatchAction {
      * @return          an ActionForward to the next page or back to login
      * @throws Exception if an error occurs during processing
      */
-    public ActionForward getUserLogin(ActionMapping mapping, ActionForm form,
+    @SuppressWarnings("deprecation")
+	public ActionForward getUserLogin(ActionMapping mapping, ActionForm form,
                                       HttpServletRequest request, HttpServletResponse response) 
                                       throws Exception {
         T001Form loginForm = (T001Form) form;

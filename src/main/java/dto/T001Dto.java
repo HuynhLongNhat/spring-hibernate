@@ -1,6 +1,5 @@
 package dto;
 
-import java.math.BigDecimal;
 
 /**
  * T001Dto - representing a user.
@@ -14,7 +13,7 @@ import java.math.BigDecimal;
 public class T001Dto {
 
     /** Unique personal code of this user */
-    private BigDecimal psnCd;
+    private int psnCd;
 
     /** User ID used for login authentication */
     private String userId;
@@ -30,7 +29,7 @@ public class T001Dto {
      *
      * @return the personal code
      */
-    public BigDecimal getPsnCd() {
+    public int getPsnCd() {
         return psnCd;
     }
 
@@ -39,7 +38,7 @@ public class T001Dto {
      *
      * @param psnCd the personal code to set
      */
-    public void setPsnCd(BigDecimal psnCd) {
+    public void setPsnCd(int psnCd) {
         this.psnCd = psnCd;
     }
 

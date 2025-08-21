@@ -1,6 +1,5 @@
 package service;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -59,9 +58,9 @@ public class T002Service {
      * @param customerIds list of customer IDs to be deleted
      * @throws SQLException if the delete operation fails
      */
-    public void deleteCustomers(List<BigDecimal> customerIds) throws SQLException {
+    public void deleteCustomers(List<Integer> listIds) throws SQLException {
         try {
-            t002Dao.deleteCustomer(customerIds);
+            t002Dao.deleteCustomer(listIds);
         } catch (Exception e) {
             throw new SQLException("Delete customers failed", e);
         }

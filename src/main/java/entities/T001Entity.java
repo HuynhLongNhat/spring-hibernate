@@ -1,7 +1,6 @@
 package entities;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -16,7 +15,7 @@ public class T001Entity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** Personal code (NUMERIC(4)) */
-    private BigDecimal psnCd;
+    private Integer psnCd;
 
     /** User ID (VARCHAR(8)) */
     private String userId;
@@ -34,13 +33,13 @@ public class T001Entity implements Serializable {
     private Timestamp insertYmd;
 
     /** Insertion personal code (NUMERIC(5)) */
-    private BigDecimal insertPsnCd;
+    private Integer insertPsnCd;
 
     /** Update timestamp (TIMESTAMP) */
     private Timestamp updateYmd;
 
     /** Update personal code (NUMERIC(5)) */
-    private BigDecimal updatePsnCd;
+    private Integer updatePsnCd;
 
     // ================= Getters & Setters =================
 
@@ -49,7 +48,7 @@ public class T001Entity implements Serializable {
      * 
      * @return personal code
      */
-    public BigDecimal getPsnCd() {
+    public Integer getPsnCd() {
         return psnCd;
     }
 
@@ -58,7 +57,7 @@ public class T001Entity implements Serializable {
      * 
      * @param psnCd personal code
      */
-    public void setPsnCd(BigDecimal psnCd) {
+    public void setPsnCd(Integer psnCd) {
         this.psnCd = psnCd;
     }
 
@@ -157,7 +156,7 @@ public class T001Entity implements Serializable {
      * 
      * @return insertion personal code
      */
-    public BigDecimal getInsertPsnCd() {
+    public Integer getInsertPsnCd() {
         return insertPsnCd;
     }
 
@@ -166,7 +165,7 @@ public class T001Entity implements Serializable {
      * 
      * @param insertPsnCd insertion personal code
      */
-    public void setInsertPsnCd(BigDecimal insertPsnCd) {
+    public void setInsertPsnCd(Integer insertPsnCd) {
         this.insertPsnCd = insertPsnCd;
     }
 
@@ -193,7 +192,7 @@ public class T001Entity implements Serializable {
      * 
      * @return update personal code
      */
-    public BigDecimal getUpdatePsnCd() {
+    public Integer getUpdatePsnCd() {
         return updatePsnCd;
     }
 
@@ -202,7 +201,7 @@ public class T001Entity implements Serializable {
      * 
      * @param updatePsnCd update personal code
      */
-    public void setUpdatePsnCd(BigDecimal updatePsnCd) {
+    public void setUpdatePsnCd(Integer updatePsnCd) {
         this.updatePsnCd = updatePsnCd;
     }
 }

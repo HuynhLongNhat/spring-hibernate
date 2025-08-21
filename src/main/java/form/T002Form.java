@@ -1,6 +1,5 @@
 package form;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -74,7 +73,7 @@ public class T002Form extends ActionForm {
 	// =========================
 
 	/** Array of selected customer IDs (e.g., for bulk delete). */
-	private BigDecimal[] customerIds; 
+	private int[] customerIds; 
 
 	// =========================
 	// Pagination fields
@@ -128,11 +127,11 @@ public class T002Form extends ActionForm {
 		this.birthdayTo = birthdayTo;
 	}
 
-	public BigDecimal[] getCustomerIds() {
+	public int[] getCustomerIds() {
 	    return customerIds;
 	}
 
-	public void setCustomerIds(BigDecimal[] customerIds) {
+	public void setCustomerIds(int[] customerIds) {
 	    this.customerIds = customerIds;
 	}
 

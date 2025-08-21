@@ -1,10 +1,10 @@
 package action;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -92,11 +92,12 @@ public class T002Action extends MappingDispatchAction {
             return findCustomer(mapping, form, request, response);
         }
 
-        BigDecimal[] ids = t002Form.getCustomerIds();
+        int[] ids = t002Form.getCustomerIds();
 
         // Perform deletion using the service layer
         try {
-            t002Service.deleteCustomers(Arrays.asList(ids));
+        	  List<Integer> listIds = Arrays.stream(ids).boxed().collect(Collectors.toList());
+            t002Service.deleteCustomers(listIds);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

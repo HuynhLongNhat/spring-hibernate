@@ -1,6 +1,5 @@
 package form;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -22,7 +21,7 @@ public class T003Form extends ActionForm {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private BigDecimal customerId;
+	private int customerId;
 	private String customerName;
 	private String sex;
 	private String birthday;
@@ -31,11 +30,11 @@ public class T003Form extends ActionForm {
 	private String mode; // "ADD" or "EDIT"
 
 	// Getters & Setters
-	public BigDecimal getCustomerId() {
+	public int getCustomerId() {
 		return customerId;
 	}
 
-	public void setCustomerId(BigDecimal customerId) {
+	public void setCustomerId(int customerId) {
 		this.customerId = customerId;
 	}
 

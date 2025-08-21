@@ -1,7 +1,5 @@
 package dto;
 
-import java.math.BigDecimal;
-
 /**
  * T002Dto - representing a customer.
  * Used for transferring customer information across application layers.
@@ -13,7 +11,7 @@ import java.math.BigDecimal;
 public class T002Dto {
 
     /** Unique identifier of this customer */
-    private BigDecimal customerID;
+    private int customerID;
 
     /** Full name of this customer */
     private String customerName;
@@ -41,7 +39,7 @@ public class T002Dto {
      *
      * @return the customer ID
      */
-    public BigDecimal getCustomerID() {
+    public int getCustomerID() {
         return customerID;
     }
 
@@ -50,7 +48,7 @@ public class T002Dto {
      *
      * @param customerID the customer ID to set
      */
-    public void setCustomerID(BigDecimal customerID) {
+    public void setCustomerID(int customerID) {
         this.customerID = customerID;
     }
 
