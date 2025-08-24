@@ -103,12 +103,13 @@
     <bean id="T003" class="action.T003Action">
         <property name="t003Service" ref="T003Service" />
     </bean>
+    
+    <bean id="logout" class="action.LogoutAction">
+    </bean>
 
     <!-- Struts mapping alias -->
-    <alias name="T001" alias="/T001Login" />
+    <alias name="T001" alias="/T001" />
     <alias name="T002" alias="/T002" />
-    <alias name="T002" alias="/T002Delete" />
-    <alias name="T002" alias="/T002Logout" />
     <alias name="T003" alias="/T003" />
-    <alias name="T003" alias="/T003Save" />
+    <alias name="logout" alias="/logout" />
 </beans>

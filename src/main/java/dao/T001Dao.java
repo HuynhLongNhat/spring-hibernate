@@ -1,62 +1,50 @@
 package dao;
 
-import org.hibernate.Query;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
-import dto.T001Dto;
 import entities.T001Entity;
+import form.T001Form;
 
 /**
- * Data Access Object (DAO) class for {@link T001Entity}.
+ * DAO class for {@link T001Entity}.
  * <p>
- * This class is responsible for retrieving user information 
- * from the database using Hibernate.
- * </p>
- *
- * <p><b>Note:</b> Transactions are handled at the Service layer. 
- * The DAO layer should only contain persistence logic (CRUD).
+ * Handles database operations related to user authentication.
+ * Uses Hibernate for persistence.
  * </p>
  */
 public class T001Dao {
 
+    /** Hibernate SessionFactory, injected by Spring. */
     private SessionFactory sessionFactory;
 
     /**
-     * Setter method for injecting the Hibernate {@link SessionFactory}.
-     * This will be configured and managed by Spring.
+     * Setter for {@link SessionFactory}.
      *
-     * @param sessionFactory the Hibernate SessionFactory instance
+     * @param sessionFactory Hibernate SessionFactory
      */
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
     /**
-     * Retrieves a user from the database based on login credentials.
-     * <p>
-     * The method checks if:
-     * <ul>
-     *   <li>The userId matches</li>
-     *   <li>The password matches</li>
-     *   <li>The user has not been marked as deleted (deleteYmd is null)</li>
-     * </ul>
-     * </p>
+     * Retrieves a user by userId and password (login check).
+     * Only active users (deleteYmd is null) are considered.
      *
-     * @param inputDto a DTO containing the login credentials (userId, password)
-     * @return the matching {@link T001Entity} if found, otherwise {@code null}
+     * @param loginForm login input containing userId and password
+     * @return matched {@link T001Entity}, or null if not found
      */
-    public T001Entity getUserLogin(T001Dto inputDto) {
-        if (inputDto == null) return null;
+    public T001Entity getUserLogin(T001Form loginForm) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(T001Entity.class);
 
-        String hql = "FROM T001Entity u "
-                   + "WHERE u.deleteYmd IS NULL "
-                   + "AND u.userId = :userId "
-                   + "AND u.password = :password";
+        // add conditions: not deleted, userId matches, password matches
+        criteria.add(Restrictions.isNull("deleteYmd"))
+                .add(Restrictions.eq("userId", loginForm.getUserId()))
+                .add(Restrictions.eq("password", loginForm.getPassword()));
 
-        Query query = sessionFactory.getCurrentSession().createQuery(hql);
-        query.setParameter("userId", inputDto.getUserId());
-        query.setParameter("password", inputDto.getPassword());
-
-        return (T001Entity) query.uniqueResult();
+        return (T001Entity) criteria.uniqueResult();
     }
 }

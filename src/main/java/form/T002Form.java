@@ -11,38 +11,16 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 
+import common.Constants;
 import utils.Helper;
 
 /**
  * Form bean for the T002 screen (Customer Search).
  * <p>
- * This class captures user input for customer search criteria, selected
- * customer IDs, and pagination data for listing results.
+ * Captures user input for search criteria, selected customers, 
+ * and pagination state.
  * </p>
- *
- * <p>
- * <b>Main responsibilities:</b>
- * </p>
- * <ul>
- * <li>Bind search criteria fields from the JSP (name, gender, birthday
- * range).</li>
- * <li>Capture selected customer IDs for bulk actions (e.g., delete).</li>
- * <li>Maintain pagination state (current page, total pages, etc.) for
- * consistent navigation.</li>
- * <li>Provide input validation logic for date formats and birthday ranges.</li>
- * </ul>
- *
- * <p>
- * <b>Pagination fields:</b>
- * </p>
- * <ul>
- * <li>{@code currentPage} - The currently displayed page number.</li>
- * <li>{@code prevPage} - The previous page number for navigation.</li>
- * <li>{@code nextPage} - The next page number for navigation.</li>
- * <li>{@code totalPages} - The total number of pages calculated from search
- * results.</li>
- * </ul>
- *
+ * 
  * @author YourName
  * @version 1.1
  * @since 2025-07-21
@@ -55,177 +33,223 @@ public class T002Form extends ActionForm {
 	// =========================
 	// Search criteria fields
 	// =========================
-
-	/** Name of the customer used for search filtering. */
 	private String customerName;
-
-	/** Gender of the customer ("0" for male, "1" for female, empty for all). */
 	private String sex;
-
-	/** Start date of the birthday range (format: yyyy/MM/dd). */
 	private String birthdayFrom;
-
-	/** End date of the birthday range (format: yyyy/MM/dd). */
 	private String birthdayTo;
 
 	// =========================
 	// Selected customers (bulk actions)
 	// =========================
-
-	/** Array of selected customer IDs (e.g., for bulk delete). */
-	private int[] customerIds; 
+	private int[] customerIds;
 
 	// =========================
 	// Pagination fields
 	// =========================
-
-	/** The currently displayed page number. */
 	private int currentPage = 1;
-
-	/** The previous page number for navigation. */
 	private int prevPage = 1;
-
-	/** The next page number for navigation. */
 	private int nextPage = 1;
-
-	/** The total number of pages. */
 	private int totalPages = 1;
 
 	// =========================
 	// Getters and Setters
 	// =========================
 
+	/**
+	 * Gets the customer name filter.
+	 * @return customer name
+	 */
 	public String getCustomerName() {
 		return customerName;
 	}
 
+	/**
+	 * Sets the customer name filter.
+	 * @param customerName name to filter
+	 */
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
 	}
 
+	/**
+	 * Gets the gender filter.
+	 * @return gender value
+	 */
 	public String getSex() {
 		return sex;
 	}
 
+	/**
+	 * Sets the gender filter.
+	 * @param sex gender value
+	 */
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
 
+	/**
+	 * Gets the start birthday filter.
+	 * @return birthday from
+	 */
 	public String getBirthdayFrom() {
 		return birthdayFrom;
 	}
 
+	/**
+	 * Sets the start birthday filter.
+	 * @param birthdayFrom start date
+	 */
 	public void setBirthdayFrom(String birthdayFrom) {
 		this.birthdayFrom = birthdayFrom;
 	}
 
+	/**
+	 * Gets the end birthday filter.
+	 * @return birthday to
+	 */
 	public String getBirthdayTo() {
 		return birthdayTo;
 	}
 
+	/**
+	 * Sets the end birthday filter.
+	 * @param birthdayTo end date
+	 */
 	public void setBirthdayTo(String birthdayTo) {
 		this.birthdayTo = birthdayTo;
 	}
 
+	/**
+	 * Gets selected customer IDs.
+	 * @return array of IDs
+	 */
 	public int[] getCustomerIds() {
-	    return customerIds;
+		return customerIds;
 	}
 
+	/**
+	 * Sets selected customer IDs.
+	 * @param customerIds array of IDs
+	 */
 	public void setCustomerIds(int[] customerIds) {
-	    this.customerIds = customerIds;
+		this.customerIds = customerIds;
 	}
 
+	/**
+	 * Gets current page number.
+	 * @return current page
+	 */
 	public int getCurrentPage() {
 		return currentPage;
 	}
 
+	/**
+	 * Sets current page number.
+	 * @param currentPage page value
+	 */
 	public void setCurrentPage(int currentPage) {
 		this.currentPage = currentPage;
 	}
 
+	/**
+	 * Gets previous page number.
+	 * @return prev page
+	 */
 	public int getPrevPage() {
 		return prevPage;
 	}
 
+	/**
+	 * Sets previous page number.
+	 * @param prevPage page value
+	 */
 	public void setPrevPage(int prevPage) {
 		this.prevPage = prevPage;
 	}
 
+	/**
+	 * Gets next page number.
+	 * @return next page
+	 */
 	public int getNextPage() {
 		return nextPage;
 	}
 
+	/**
+	 * Sets next page number.
+	 * @param nextPage page value
+	 */
 	public void setNextPage(int nextPage) {
 		this.nextPage = nextPage;
 	}
 
+	/**
+	 * Gets total pages.
+	 * @return total pages
+	 */
 	public int getTotalPages() {
 		return totalPages;
 	}
 
+	/**
+	 * Sets total pages.
+	 * @param totalPages number of pages
+	 */
 	public void setTotalPages(int totalPages) {
 		this.totalPages = totalPages;
 	}
+
 	// =========================
 	// Validation logic
 	// =========================
 
 	/**
-	 * Validates user input for the T002 screen.
-	 * <p>
-	 * Ensures that:
-	 * <ul>
-	 * <li>Birthday fields follow the yyyy/MM/dd format (if provided).</li>
-	 * <li>If both birthdayFrom and birthdayTo are provided, birthdayTo is not
-	 * earlier than birthdayFrom.</li>
-	 * </ul>
-	 * </p>
-	 *
-	 * @param mapping The action mapping used to select this instance.
-	 * @param request The HTTP request being processed.
-	 * @return An ActionErrors object containing any validation errors; empty if
-	 *         validation passes.
+	 * Validates form input depending on action type.
+	 * @param mapping action mapping
+	 * @param request HTTP request
+	 * @return errors if validation fails
 	 */
 	@Override
 	public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
-	    ActionErrors errors = new ActionErrors();
-
-	    String actionType = request.getParameter("actionType"); // hoặc actionType
-	    if ("delete".equals(actionType)) {
-	        if (customerIds == null || customerIds.length == 0) {
-	            errors.add("customerId", new ActionMessage("error.customerId.required"));
-	            return errors;
-	        }
-	    }
-	    if ("search".equals(actionType)) {
-	        validateBirthday(errors);
-	    }
-
-	    return errors;
+		ActionErrors errors = new ActionErrors();
+		String action = request.getParameter(Constants.PARAM_ACTION);
+		if (Constants.ACTION_REMOVE.equals(action)) {
+			if (customerIds == null || customerIds.length == 0) {
+				errors.add(Constants.GLOBAL, new ActionMessage(Constants.ERROR_CUSTOMER_ID_REQUIRED));
+				return errors;
+			}
+		} else if (Constants.ACTION_SEARCH.equals(action)) {
+			validateBirthday(errors);
+		}
+		return errors;
 	}
 
+	/**
+	 * Validates birthday range and format.
+	 * @param errors error collection
+	 */
 	private void validateBirthday(ActionErrors errors) {
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-	    try {
-	        LocalDate from = null;
-	        LocalDate to = null;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		try {
+			LocalDate from = null;
+			LocalDate to = null;
 
-	        if (!Helper.isEmpty(birthdayFrom)) {
-	            from = LocalDate.parse(birthdayFrom.trim(), formatter);
-	        }
-	        if (!Helper.isEmpty(birthdayTo)) {
-	            to = LocalDate.parse(birthdayTo.trim(), formatter);
-	        }
-	        if (from != null && to != null && to.isBefore(from)) {
-	            errors.add("birthdayRange", new ActionMessage("error.birthday.range"));
-	        }
-	    } catch (DateTimeParseException e) {
-	        if (e.getParsedString().equals(birthdayFrom)) {
-	            errors.add("birthdayFrom", new ActionMessage("error.birthdayFrom.format"));
-	        } else {
-	            errors.add("birthdayTo", new ActionMessage("error.birthdayTo.format"));
-	        }
-	    }
+			if (!Helper.isEmpty(birthdayFrom)) {
+				from = LocalDate.parse(birthdayFrom.trim(), formatter);
+			}
+			if (!Helper.isEmpty(birthdayTo)) {
+				to = LocalDate.parse(birthdayTo.trim(), formatter);
+			}
+			if (from != null && to != null && to.isBefore(from)) {
+				errors.add(Constants.GLOBAL, new ActionMessage(Constants.ERROR_MSG_BIRTHDAY_RANGE));
+			}
+		} catch (DateTimeParseException e) {
+			if (e.getParsedString().equals(birthdayFrom)) {
+				errors.add(Constants.GLOBAL, new ActionMessage(Constants.ERROR_MSG_BIRTHDAY_FROM_FORMAT));
+			} else {
+				errors.add(Constants.GLOBAL, new ActionMessage(Constants.ERROR_MSG_BIRTHDAY_TO_FORMAT));
+			}
+		}
 	}
 
 }

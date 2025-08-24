@@ -28,10 +28,8 @@
 					name="user">
 					<bean:write name="user" property="userName" />
 				</logic:present>
-
-
 			</span>
-			<html:link action="/T002Logout">
+			<html:link action="/logout">
 				<bean:message key="label.logout" />
 			</html:link>
 		</div>
@@ -45,7 +43,7 @@
 
 		<!-- Search Form -->
 		<html:form action="/T002" styleClass="search-form" method="post">
-			<html:hidden property="actionType" value="search" />
+			<html:hidden property="action" value="search" />
 			<label> <bean:message key="label.customerName" /> <html:text
 					property="customerName" styleId="txtCustomerName" />
 			</label>
@@ -66,69 +64,88 @@
 					property="birthdayFrom" styleId="txtBirthdayFrom" /> - <html:text
 					property="birthdayTo" styleId="txtBirthdayTo" />
 			</label>
-
 			<html:submit styleId="btnSearch">
 				<bean:message key="label.search" />
 			</html:submit>
 		</html:form>
 
-		<!-- Pagination -->
-		<div class="btn-pagination">
-			<div class="previous">
-				<logic:equal name="disableFirst" value="true">
-					<button id="btnFirst" disabled>&lt;&lt;</button>
-				</logic:equal>
-				<logic:notEqual name="disableFirst" value="true">
-					<html:form action="/T002" method="post" style="display:inline;">
-						<input type="hidden" name="currentPage" value="1" />
-						<html:submit styleId="btnFirst">&lt;&lt;</html:submit>
-					</html:form>
-				</logic:notEqual>
+<!-- Pagination -->
+<div class="btn-pagination">
+	<div class="previous">
+		<logic:equal name="disableFirst" value="true">
+			<button id="btnFirst" disabled>&lt;&lt;</button>
+		</logic:equal>
+		<logic:empty name="customers">
+			<button id="btnFirst" disabled>&lt;&lt;</button>
+		</logic:empty>
+		<logic:notEqual name="disableFirst" value="true">
+			<logic:notEmpty name="customers">
+				<html:form action="/T002.do" method="post" style="display:inline;">
+					<input type="hidden" name="currentPage" value="1" />
+					<html:submit styleId="btnFirst">&lt;&lt;</html:submit>
+				</html:form>
+			</logic:notEmpty>
+		</logic:notEqual>
 
-				<logic:equal name="disablePrevious" value="true">
-					<button id="btnPrevious" disabled>&lt;</button>
-				</logic:equal>
-				<logic:notEqual name="disablePrevious" value="true">
-					<html:form action="/T002" method="post" style="display:inline;">
-						<input type="hidden" name="currentPage"
-							value="<bean:write name='T002Form' property='prevPage'/>" />
-						<html:submit styleId="btnPrevious">&lt;</html:submit>
-					</html:form>
-				</logic:notEqual>
+		<logic:equal name="disablePrevious" value="true">
+			<button id="btnPrevious" disabled>&lt;</button>
+		</logic:equal>
+		<logic:empty name="customers">
+			<button id="btnPrevious" disabled>&lt;</button>
+		</logic:empty>
+		<logic:notEqual name="disablePrevious" value="true">
+			<logic:notEmpty name="customers">
+				<html:form action="/T002" method="post" style="display:inline;">
+					<input type="hidden" name="currentPage"
+						value="<bean:write name='T002Form' property='prevPage'/>" />
+					<html:submit styleId="btnPrevious">&lt;</html:submit>
+				</html:form>
+			</logic:notEmpty>
+		</logic:notEqual>
 
-				<span><bean:message key="label.previous" /></span>
-			</div>
+		<span><bean:message key="label.previous" /></span>
+	</div>
 
-			<div class="next">
-				<span><bean:message key="label.next" /></span>
+	<div class="next">
+		<span><bean:message key="label.next" /></span>
 
-				<logic:equal name="disableNext" value="true">
-					<button id="btnNext" disabled>&gt;</button>
-				</logic:equal>
-				<logic:notEqual name="disableNext" value="true">
-					<html:form action="/T002" method="post" style="display:inline;">
-						<input type="hidden" name="currentPage"
-							value="<bean:write name='T002Form' property='nextPage'/>" />
-						<html:submit styleId="btnNext">&gt;</html:submit>
-					</html:form>
-				</logic:notEqual>
+		<logic:equal name="disableNext" value="true">
+			<button id="btnNext" disabled>&gt;</button>
+		</logic:equal>
+		<logic:empty name="customers">
+			<button id="btnNext" disabled>&gt;</button>
+		</logic:empty>
+		<logic:notEqual name="disableNext" value="true">
+			<logic:notEmpty name="customers">
+				<html:form action="/T002" method="post" style="display:inline;">
+					<input type="hidden" name="currentPage"
+						value="<bean:write name='T002Form' property='nextPage'/>" />
+					<html:submit styleId="btnNext">&gt;</html:submit>
+				</html:form>
+			</logic:notEmpty>
+		</logic:notEqual>
 
-				<logic:equal name="disableLast" value="true">
-					<button id="btnLast" disabled>&gt;&gt;</button>
-				</logic:equal>
-				<logic:notEqual name="disableLast" value="true">
-					<html:form action="/T002" method="post" style="display:inline;">
-						<input type="hidden" name="currentPage"
-							value="<bean:write name='T002Form' property='totalPages'/>" />
-						<html:submit styleId="btnLast">&gt;&gt;</html:submit>
-					</html:form>
-				</logic:notEqual>
-			</div>
-		</div>
+		<logic:equal name="disableLast" value="true">
+			<button id="btnLast" disabled>&gt;&gt;</button>
+		</logic:equal>
+		<logic:empty name="customers">
+			<button id="btnLast" disabled>&gt;&gt;</button>
+		</logic:empty>
+		<logic:notEqual name="disableLast" value="true">
+			<logic:notEmpty name="customers">
+				<html:form action="/T002" method="post" style="display:inline;">
+					<input type="hidden" name="currentPage"
+						value="<bean:write name='T002Form' property='totalPages'/>" />
+					<html:submit styleId="btnLast">&gt;&gt;</html:submit>
+				</html:form>
+			</logic:notEmpty>
+		</logic:notEqual>
+	</div>
+</div>
 
 		<!-- Customer List -->
-		<html:form action="/T002Delete" method="post">
-			<html:hidden property="actionType" value="delete" />
+		<html:form action="/T002" method="post">
+		   <html:hidden property="action" value="remove"/>			
 			<table class="customer-table">
 				<thead>
 					<tr>
@@ -184,7 +201,7 @@
 	<%@ include file="Footer.jsp"%>
 
 	<script
-		src="<%=request.getContextPath()%>/WebContent/js/script.js?<%=System.currentTimeMillis()%>"></script>
+		src="<%=request.getContextPath()%>/WebContent/js/T002.js?<%=System.currentTimeMillis()%>"></script>
 	<script>
 	document.addEventListener("DOMContentLoaded", function () {
 		var errorElement = document.getElementById("errorMessages");

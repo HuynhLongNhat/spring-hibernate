@@ -1,6 +1,5 @@
 package dto;
 
-
 /**
  * T001Dto - representing a user.
  * Used for transferring user login credentials and related information across
@@ -38,7 +37,7 @@ public class T001Dto {
      *
      * @param psnCd the personal code to set
      */
-    public void setPsnCd(int psnCd) {
+    public void setPsnCd(Integer psnCd) {
         this.psnCd = psnCd;
     }
 
